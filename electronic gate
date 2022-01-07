@@ -1,0 +1,87 @@
+#include <Servo.h>
+Servo myservo;
+int pos = 0;
+const int outldr = A0;
+const int inldr = A1;
+const int buzzer = 4;
+const int greenled = 13;
+const int redled = 3;
+const int button = 2;
+int i=1;
+int lastState = LOW;
+int lstpress = LOW;
+int current_state;
+int x=0;
+int y=0;
+int inlight;
+int outlight;
+void setup() {
+  Serial.begin(9600);
+  myservo.attach(9);
+  pinMode(outldr, INPUT);
+  pinMode(inldr, INPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(greenled, OUTPUT);
+  pinMode(redled, OUTPUT);
+  pinMode(button, INPUT);
+}
+void loop() {
+  inlight = analogRead(inldr);
+  outlight = analogRead(outldr);
+  current_state = digitalRead(button); 
+  if (current_state != lstpress) {
+      lstpress = current_state; }
+      if (lastState == HIGH && current_state == LOW){
+        Serial.println("button is pressed");
+        i++;
+        }
+      delay(50);
+   lastState = current_state;
+    if (i%2 ==0){
+       if(x<5){
+         if(outlight <= 10){
+            delay (3000);
+            x = x+1;
+            Serial.println(x);
+            for (pos = 0; pos <= 90; pos++) { 
+              myservo.write(pos);              
+              delay(15);                                                                                                                                                                                                                                                       
+                }
+            delay(500);
+            for (pos = 90; pos >= 0; pos--) { 
+               myservo.write(pos);              
+               delay(15);                       
+               }
+           for(y=0; y<=x-1; y++){
+             digitalWrite(greenled, HIGH);
+             delay(500);
+             digitalWrite(greenled, LOW);
+             delay(500);
+              }}
+      }else{
+         digitalWrite(buzzer, HIGH);
+         delay(1000);
+         digitalWrite(buzzer, LOW);
+         delay(1000);
+      }
+     if(x>0){
+       if(inlight <= 10){
+         delay(3000);
+         x = x-1;
+         Serial.println(x);
+         for (pos = 0; pos <= 90; pos++) { 
+              myservo.write(pos);              
+              delay(15);                       
+                }
+         delay(500);
+         for (pos = 90; pos >= 0; pos--) { 
+             myservo.write(pos);              
+              delay(15);                       
+               }
+         for(y = 0; y <= x-1; y++){
+             digitalWrite(redled, HIGH);
+             delay(500);
+             digitalWrite(redled, LOW);
+             delay(500);}}
+     }}
+     }
